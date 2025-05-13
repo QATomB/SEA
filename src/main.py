@@ -1,7 +1,10 @@
-from flask import Flask
+from flask import Flask, jsonify, redirect, render_template, request, url_for
+from database.example_model import User
+from src.database.db import db, InitialiseDatabase
 
-app = Flask(__name__)
+app: Flask = Flask(__name__)
+InitialiseDatabase(app=app)
 
 @app.route("/")
-def welcome_page():
+def hello_world():
     return "<p>Hello World</p>"
