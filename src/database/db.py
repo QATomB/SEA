@@ -1,7 +1,7 @@
 from flask import Flask
 from sqlalchemy import Integer, String
-from src.database.base_items import db
-from database.example_model import User
+from database.base_items import db
+from database.models.employee import employee
 
 def InitialiseDatabase(app: Flask) -> None:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
