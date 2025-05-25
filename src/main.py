@@ -38,5 +38,24 @@ def add_employee_record():
         return redirect(DEBUG_ROUTE + "/all_employees")
     return render_template('add_employee.html', title="Add Employee", form=form)
 
+@app.route("/add_item_type", methods=["GET", "POST"])
+def add_item_type_record():
+    form = Forms.ItemTypeForm()
+    if form.validate_on_submit():
+        flash(f'Requested addition of item type named: {form.item_name}')
+        itm_type = item_type(item_name=form.item_name.data, item_desc=form.item_desc.data)
+        db.session.add(itm_type)
+        db.session.commit()
+        return redirect(DEBUG_ROUTE + "/all_item_types")
+    return render_template('add_item_type.html', title="Add Item Type", form=form)
+
+@app.route(DEBUG_ROUTE + "/all_item_types")
+def get_all_item_types():
+    all_item_types = '{'
+    for e in item_type.query.all():
+        all_item_types += '{"type_id" : "' + str(e.type_id) + '", "item_name" : "' + e.item_name + '", "item_desc" : "' + e.item_desc +  '"},'
+    all_item_types += "}"
+    return jsonify(all_item_types)
+
 # @app.route(DEBUG_ROUTE + "move_item")
 # def add_item_movement_log():
