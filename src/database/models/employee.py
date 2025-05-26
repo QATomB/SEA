@@ -6,3 +6,6 @@ class employee(db.Model):
     __tablename__ = "employee"
     employee_id: Mapped[str] = mapped_column(String, primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(String)
+
+    def __str__(self):
+        return self.employee_id
