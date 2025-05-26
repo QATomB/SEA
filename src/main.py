@@ -3,7 +3,7 @@ from database.db import db, InitialiseDatabase
 from database.models.item_type import item_type
 from database.models.item import item, Quality
 from database.models.employee import employee
-from database.models.item_transit import item_transit
+from database.models.item_transit import item_transit, Locations
 import json
 import os
 import form as Forms
@@ -73,5 +73,24 @@ def get_all_items():
     all_items = '{'
     for e in item.query.all():
         all_items += '{"item_id" : "' + str(e.item_id) + '", "type_id" : "' + str(e.type_id) + '", "quality" : "' + e.condition.name +  '"},'
+    all_items += "}"
+    return jsonify(all_items)
+
+@app.route("/add_item_transit_log", methods=["GET", "POST"])
+def add_item_transit_record():
+    form = Forms.ItemTransitForm()
+    if form.validate_on_submit():
+        flash(f'Requested addition of item transit log for item: {form.item_id}')
+        itm = item_transit(item_id=form.item_id.data, move_date=form.move_date.data, from_loc=Locations[form.from_loc.data], to_loc=Locations[form.to_loc.data], employee_id=form.employee_id.data)
+        db.session.add(itm)
+        db.session.commit()
+        return redirect(DEBUG_ROUTE + "/all_item_transit_logs")
+    return render_template('add_move_item_log.html', title="Add Item", form=form)
+
+@app.route(DEBUG_ROUTE + "/all_item_transit_logs")
+def get_all_item_transits():
+    all_items = '{'
+    for e in item_transit.query.all():
+        all_items += '{"item_id" : "' + str(e.item_id) + '", "move_date" : "' + str(e.move_date) + '", "from_loc" : "' + e.from_loc.name + '", "to_loc" : "' + e.to_loc.name + '", "employee_id" : "' + str(e.employee_id) + '"},'
     all_items += "}"
     return jsonify(all_items)

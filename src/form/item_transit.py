@@ -1,14 +1,20 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SelectField, DateTimeField, SubmitField
+from wtforms import StringField, IntegerField, SelectField, DateTimeLocalField, SubmitField
 from wtforms.validators import DataRequired
-from database.models.item import Quality
+from database.models.item_transit import Locations
+from database.models.employee import employee
+from wtforms_sqlalchemy.fields import QuerySelectField
+from database.db import db
 
-# class ItemForm(FlaskForm):
-#     item_id = StringField('Item Type', validators=[DataRequired()])
-    
-#     move_date = DateTimeField('Move Time', validators=[DataRequired()])
-#     from_loc: Mapped[Locations] = mapped_column(Enum(Locations))
-#     to_loc: Mapped[Locations] = mapped_column(Enum(Locations))
-#     employee_id: Mapped[str] = mapped_column(String, ForeignKey("employee.employee_id"))
+def all_employees():
+    employees: list[employee] = db.session.query(employee).all()
+    for e in employees:
+        yield e
 
-#     submit = SubmitField('Add Item Type')
+class ItemTransitForm(FlaskForm):
+    item_id = IntegerField('Item Id', validators=[DataRequired()])
+    move_date = DateTimeLocalField('Move Time', validators=[DataRequired()])
+    from_loc = SelectField('Start location', choices=[(choice.name, choice.name) for choice in Locations], validators=[DataRequired()])
+    to_loc = SelectField('End location', choices=[(choice.name, choice.name) for choice in Locations], validators=[DataRequired()])
+    employee_id = QuerySelectField('Assigned Employee\'s Employee ID', query_factory=all_employees, validators=[DataRequired()])
+    submit = SubmitField('Add Item Type')

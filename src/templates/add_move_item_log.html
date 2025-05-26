@@ -1,0 +1,31 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <h1>Add Item Type To Database</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.item_id.label }}<br />
+            {{ form.item_id(size=32) }}
+        </p>
+        <p>
+            {{ form.move_date.label }}<br />
+            {{ form.move_date(size=32) }}
+        </p>
+        <p>
+            {{ form.from_loc.label }}<br />
+            {{ form.from_loc(size=32) }}
+        </p>
+        <p>
+            {{ form.to_loc.label }}<br />
+            {{ form.to_loc(size=32) }}
+        </p>
+        <p>
+            {{ form.employee_id.label }}<br />
+            {{ form.employee_id(size=32) }}
+        </p>
+        <p>
+            {{ form.submit() }}
+        </p>
+    </form>
+{% endblock %}
