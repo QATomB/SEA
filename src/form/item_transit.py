@@ -6,11 +6,13 @@ from database.models.employee import employee
 from wtforms_sqlalchemy.fields import QuerySelectField
 from database.db import db
 
+# Abstraction of query to run for QuerySelectField, returning all employees
 def all_employees():
     employees: list[employee] = db.session.query(employee).all()
     for e in employees:
         yield e
 
+# Item movement creation form
 class ItemTransitForm(FlaskForm):
     item_id = IntegerField('Item Id', validators=[DataRequired()])
     move_date = DateTimeLocalField('Move Time', validators=[DataRequired()])

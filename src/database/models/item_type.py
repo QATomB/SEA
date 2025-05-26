@@ -2,6 +2,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from database.base_items import db
 
+# Item Type class to contain different types of items NHS Midlands holds
 class item_type(db.Model):
     __tablename__ = "item_type"
     type_id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
