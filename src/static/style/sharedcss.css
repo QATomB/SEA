@@ -104,7 +104,8 @@ tr:nth-child(even) {
 
 form {
     position: relative;
-    width: calc(100vw - 400px);
+    width: calc(100vw - 800px);
+    min-width: 800px !important;
     left: 50%;
     transform: translateX(-50%);
     min-width: 300px;
