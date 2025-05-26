@@ -6,6 +6,7 @@
     {% else %}
     <title>NHS Midlands | Asset Managment</title>
     {% endif %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style/sharedcss.css') }}">
     </head>
     <body>
         {% block content %}{% endblock %}
