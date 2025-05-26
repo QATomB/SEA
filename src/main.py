@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, redirect, render_template, request, url_for, flash
 from database.db import db, InitialiseDatabase
 from database.models.item_type import item_type
-from database.models.item import item
+from database.models.item import item, Quality
 from database.models.employee import employee
 from database.models.item_transit import item_transit
 import json
@@ -57,5 +57,21 @@ def get_all_item_types():
     all_item_types += "}"
     return jsonify(all_item_types)
 
-# @app.route(DEBUG_ROUTE + "move_item")
-# def add_item_movement_log():
+@app.route("/add_item", methods=["GET", "POST"])
+def add_item_record():
+    form = Forms.ItemForm()
+    if form.validate_on_submit():
+        flash(f'Requested addition of item of type: {form.type_id}')
+        itm = item(type_id=form.type_id.data, condition=Quality[form.condition.data])
+        db.session.add(itm)
+        db.session.commit()
+        return redirect(DEBUG_ROUTE + "/all_items")
+    return render_template('add_item.html', title="Add Item", form=form)
+
+@app.route(DEBUG_ROUTE + "/all_items")
+def get_all_items():
+    all_items = '{'
+    for e in item.query.all():
+        all_items += '{"item_id" : "' + str(e.item_id) + '", "type_id" : "' + str(e.type_id) + '", "quality" : "' + e.condition.name +  '"},'
+    all_items += "}"
+    return jsonify(all_items)
