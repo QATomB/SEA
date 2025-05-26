@@ -3,6 +3,7 @@
 ## get started
 
 1. open a virtual environment
-2. pip install -r requirements.txt
-3. run command `cd src`
-4. run command `flask --app main run`
+2. create a .env file with value `SECRET_KEY=<SECRET-KEY-GOES-HERE>`
+3. run command `pip install -r requirements.txt`
+4. run command `cd src`
+5. run command `flask --app main run`

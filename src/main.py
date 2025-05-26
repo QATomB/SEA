@@ -5,19 +5,23 @@ from database.models.item import item, Quality
 from database.models.employee import employee
 from database.models.item_transit import item_transit, Locations
 from database.models.display_transit import DisplayTransit
+from dotenv import load_dotenv
 import os
 import form as Forms
 
+# Initialise the .env
+load_dotenv()
 
-JSON_ROUTE = "/json"
-
+# Intialise the Flask instance
 app: Flask = Flask(__name__)
-app.config['SECRET_KEY'] = "os.environ.get('SECRET_KEY')"
+# Set Flask secret from .env
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+# Intitialise the database
 InitialiseDatabase(app=app)
 
+# Main Dashboard page
 @app.route("/")
 def hello_world():
-    # all_movements = item_transit.query.order_by(item_transit.move_date.desc())
     all_movement_records = item_transit.query.all()
     all_movements = []
     for record in all_movement_records:
@@ -34,14 +38,7 @@ def hello_world():
         all_movements.append(itm)
     return render_template('dashboard.html', movements=all_movements)
 
-@app.route(JSON_ROUTE + "/all_employees")
-def get_all_employees():
-    all_employees = '{'
-    for e in employee.query.all():
-        all_employees += '{"employee_id" : "' + e.employee_id + '", "name" : "' + e.name + '"},'
-    all_employees += "}"
-    return jsonify(all_employees)
-
+# Page to add a new employee record
 @app.route("/add_employee", methods=["GET", "POST"])
 def add_employee_record():
     form = Forms.EmployeeForm()
@@ -50,9 +47,10 @@ def add_employee_record():
         emp = employee(employee_id = form.employee_id.data, name=form.name.data)
         db.session.add(emp)
         db.session.commit()
-        return redirect(JSON_ROUTE + "/all_employees")
+        return redirect("/")
     return render_template('add_employee.html', title="Add Employee", form=form)
 
+# Page to add a new item type record
 @app.route("/add_item_type", methods=["GET", "POST"])
 def add_item_type_record():
     form = Forms.ItemTypeForm()
@@ -61,17 +59,10 @@ def add_item_type_record():
         itm_type = item_type(item_name=form.item_name.data, item_desc=form.item_desc.data)
         db.session.add(itm_type)
         db.session.commit()
-        return redirect(JSON_ROUTE + "/all_item_types")
+        return redirect("/")
     return render_template('add_item_type.html', title="Add Item Type", form=form)
 
-@app.route(JSON_ROUTE + "/all_item_types")
-def get_all_item_types():
-    all_item_types = '{'
-    for e in item_type.query.all():
-        all_item_types += '{"type_id" : "' + str(e.type_id) + '", "item_name" : "' + e.item_name + '", "item_desc" : "' + e.item_desc +  '"},'
-    all_item_types += "}"
-    return jsonify(all_item_types)
-
+# Page to add a new item record
 @app.route("/add_item", methods=["GET", "POST"])
 def add_item_record():
     form = Forms.ItemForm()
@@ -80,17 +71,10 @@ def add_item_record():
         itm = item(type_id=form.type_id.data, condition=Quality[form.condition.data])
         db.session.add(itm)
         db.session.commit()
-        return redirect(JSON_ROUTE + "/all_items")
+        return redirect("/")
     return render_template('add_item.html', title="Add Item", form=form)
 
-@app.route(JSON_ROUTE + "/all_items")
-def get_all_items():
-    all_items = '{'
-    for e in item.query.all():
-        all_items += '{"item_id" : "' + str(e.item_id) + '", "type_id" : "' + str(e.type_id) + '", "quality" : "' + e.condition.name +  '"},'
-    all_items += "}"
-    return jsonify(all_items)
-
+# Page to add a new item movement log
 @app.route("/add_item_transit_log", methods=["GET", "POST"])
 def add_item_transit_record():
     form = Forms.ItemTransitForm()
@@ -99,13 +83,5 @@ def add_item_transit_record():
         itm = item_transit(item_id=form.item_id.data, move_date=form.move_date.data, from_loc=form.from_loc.data, to_loc=form.to_loc.data, employee_id=form.employee_id.data.employee_id)
         db.session.add(itm)
         db.session.commit()
-        return redirect(JSON_ROUTE + "/all_item_transit_logs")
+        return redirect("/")
     return render_template('add_move_item_log.html', title="Add Item", form=form)
-
-@app.route(JSON_ROUTE + "/all_item_transit_logs")
-def get_all_item_transits():
-    all_items = '{'
-    for e in item_transit.query.all():
-        all_items += '{"item_id" : "' + str(e.item_id) + '", "move_date" : "' + str(e.move_date) + '", "from_loc" : "' + e.from_loc.name + '", "to_loc" : "' + e.to_loc.name + '", "employee_id" : "' + str(e.employee_id) + '"},'
-    all_items += "}"
-    return jsonify(all_items)
