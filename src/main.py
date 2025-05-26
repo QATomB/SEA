@@ -4,12 +4,12 @@ from database.models.item_type import item_type
 from database.models.item import item, Quality
 from database.models.employee import employee
 from database.models.item_transit import item_transit, Locations
-import json
+from database.models.display_transit import DisplayTransit
 import os
 import form as Forms
 
 
-DEBUG_ROUTE = "/api"
+JSON_ROUTE = "/json"
 
 app: Flask = Flask(__name__)
 app.config['SECRET_KEY'] = "os.environ.get('SECRET_KEY')"
@@ -17,9 +17,24 @@ InitialiseDatabase(app=app)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello World</p>"
+    # all_movements = item_transit.query.order_by(item_transit.move_date.desc())
+    all_movement_records = item_transit.query.all()
+    all_movements = []
+    for record in all_movement_records:
+        employee_record = employee.query.filter_by(employee_id=record.employee_id).one()
+        formatted_employee_str = f"{employee_record.employee_id} ({employee_record.name})"
+        itm = DisplayTransit(
+            item_id=record.item_id,
+            type=item_type.query.filter_by(type_id = item.query.filter_by(item_id=record.item_id).one().type_id).one().item_name,
+            from_loc=record.from_loc,
+            to_loc=record.to_loc,
+            datetime_moved=record.move_date,
+            overseer=formatted_employee_str
+        )
+        all_movements.append(itm)
+    return render_template('dashboard.html', movements=all_movements)
 
-@app.route(DEBUG_ROUTE + "/all_employees")
+@app.route(JSON_ROUTE + "/all_employees")
 def get_all_employees():
     all_employees = '{'
     for e in employee.query.all():
@@ -35,7 +50,7 @@ def add_employee_record():
         emp = employee(employee_id = form.employee_id.data, name=form.name.data)
         db.session.add(emp)
         db.session.commit()
-        return redirect(DEBUG_ROUTE + "/all_employees")
+        return redirect(JSON_ROUTE + "/all_employees")
     return render_template('add_employee.html', title="Add Employee", form=form)
 
 @app.route("/add_item_type", methods=["GET", "POST"])
@@ -46,10 +61,10 @@ def add_item_type_record():
         itm_type = item_type(item_name=form.item_name.data, item_desc=form.item_desc.data)
         db.session.add(itm_type)
         db.session.commit()
-        return redirect(DEBUG_ROUTE + "/all_item_types")
+        return redirect(JSON_ROUTE + "/all_item_types")
     return render_template('add_item_type.html', title="Add Item Type", form=form)
 
-@app.route(DEBUG_ROUTE + "/all_item_types")
+@app.route(JSON_ROUTE + "/all_item_types")
 def get_all_item_types():
     all_item_types = '{'
     for e in item_type.query.all():
@@ -65,10 +80,10 @@ def add_item_record():
         itm = item(type_id=form.type_id.data, condition=Quality[form.condition.data])
         db.session.add(itm)
         db.session.commit()
-        return redirect(DEBUG_ROUTE + "/all_items")
+        return redirect(JSON_ROUTE + "/all_items")
     return render_template('add_item.html', title="Add Item", form=form)
 
-@app.route(DEBUG_ROUTE + "/all_items")
+@app.route(JSON_ROUTE + "/all_items")
 def get_all_items():
     all_items = '{'
     for e in item.query.all():
@@ -81,13 +96,13 @@ def add_item_transit_record():
     form = Forms.ItemTransitForm()
     if form.validate_on_submit():
         flash(f'Requested addition of item transit log for item: {form.item_id}')
-        itm = item_transit(item_id=form.item_id.data, move_date=form.move_date.data, from_loc=Locations[form.from_loc.data], to_loc=Locations[form.to_loc.data], employee_id=form.employee_id.data)
+        itm = item_transit(item_id=form.item_id.data, move_date=form.move_date.data, from_loc=form.from_loc.data, to_loc=form.to_loc.data, employee_id=form.employee_id.data.employee_id)
         db.session.add(itm)
         db.session.commit()
-        return redirect(DEBUG_ROUTE + "/all_item_transit_logs")
+        return redirect(JSON_ROUTE + "/all_item_transit_logs")
     return render_template('add_move_item_log.html', title="Add Item", form=form)
 
-@app.route(DEBUG_ROUTE + "/all_item_transit_logs")
+@app.route(JSON_ROUTE + "/all_item_transit_logs")
 def get_all_item_transits():
     all_items = '{'
     for e in item_transit.query.all():

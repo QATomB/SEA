@@ -1,0 +1,48 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+
+    {% include "_navbar.html" %}
+    
+    <table id="dashboard-table">
+        <thead>
+            <tr>
+                <th>Item ID</th>
+                <th>Item Type</th>
+                <th>Start Location</th>
+                <th>End Location</th>
+                <th>Date Moved</th>
+                <th>Overseer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movement in movements %}
+            <tr class="item">
+                <td>{{ movement.item_id }}</td>
+                <td>{{ movement.type }}</td>
+                <td>{{ movement.from_loc }}</td>
+                <td>{{ movement.to_loc }}</td>
+                <td>{{ movement.datetime_moved }}</td>
+                <td>{{ movement.overseer }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script>
+        let tid = "#dashboard-table";
+        let headers = document.querySelectorAll(tid + " th");
+
+        // Sort the table element when clicking on the table headers
+        headers.forEach(function(element, i) {
+            element.addEventListener("click", function() {
+                w3.sortHTML(tid, ".item", "td:nth-child(" + (i + 1) + ")");
+            });
+            if (element.innerHTML == "Date Moved") {
+                element.click();
+                element.click();
+            } 
+        });
+    </script>
+{% endblock %}
