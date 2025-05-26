@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+    background-color: white;
+}
+
+h1 {
+    background-color: rgb(255, 231, 144);
+    height: 60px;
+    line-height: 60px;
+    padding-left: 40px;
+}
+
+form {
+    position: relative;
+    width: calc(100vw - 400px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 300px;
+    padding: 20px;
+    margin-top: 60px;
+    background-color: rgb(254, 238, 177);
+    text-align: center;
+    border-radius: 4px;
+}
+input, select {
+    width: 300px;
+    max-height: 150px;
+    margin-top: 5px;
+}
+
+label {
+    position: absolute;
+    transform: translateX(-140px);
+}
+
+input {
+    height: 50px;
+}
