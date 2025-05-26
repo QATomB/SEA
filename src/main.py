@@ -96,7 +96,7 @@ def add_item_transit_record():
     form = Forms.ItemTransitForm()
     if form.validate_on_submit():
         flash(f'Requested addition of item transit log for item: {form.item_id}')
-        itm = item_transit(item_id=form.item_id.data, move_date=form.move_date.data, from_loc=Locations[form.from_loc.data], to_loc=Locations[form.to_loc.data], employee_id=form.employee_id.data.employee_id)
+        itm = item_transit(item_id=form.item_id.data, move_date=form.move_date.data, from_loc=form.from_loc.data, to_loc=form.to_loc.data, employee_id=form.employee_id.data.employee_id)
         db.session.add(itm)
         db.session.commit()
         return redirect(JSON_ROUTE + "/all_item_transit_logs")

@@ -8,6 +8,9 @@ class Locations(enum.Enum):
     hospital1 = 1
     hospital2 = 2
 
+    def __str__(self):
+        return str(self.name)
+
 class item_transit(db.Model):
     __tablename__ = "item_transit"
     item_id: Mapped[int] = mapped_column(Integer, ForeignKey("item.item_id"), primary_key=True)
