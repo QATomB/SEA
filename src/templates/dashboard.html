@@ -3,4 +3,28 @@
 {% block content %}
     <h1>Dashboard</h1>
     
+    <table>
+        <thead>
+            <tr>
+                <th>Item ID</th>
+                <th>Item Type</th>
+                <th>Start Location</th>
+                <th>End Location</th>
+                <th>Date Moved</th>
+                <th>Overseer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movement in movements %}
+            <tr>
+                <td>{{ movement.item_id }}</td>
+                <td>{{ movement.type }}</td>
+                <td>{{ movement.from_loc }}</td>
+                <td>{{ movement.to_loc }}</td>
+                <td>{{ movement.datetime_moved }}</td>
+                <td>{{ movement.overseer }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

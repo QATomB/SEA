@@ -4,7 +4,7 @@ from database.models.item_type import item_type
 from database.models.item import item, Quality
 from database.models.employee import employee
 from database.models.item_transit import item_transit, Locations
-import json
+from database.models.display_transit import DisplayTransit
 import os
 import form as Forms
 
@@ -17,7 +17,22 @@ InitialiseDatabase(app=app)
 
 @app.route("/")
 def hello_world():
-    return render_template('dashboard.html')
+    # all_movements = item_transit.query.order_by(item_transit.move_date.desc())
+    all_movement_records = item_transit.query.all()
+    all_movements = []
+    for record in all_movement_records:
+        employee_record = employee.query.filter_by(employee_id=record.employee_id).one()
+        formatted_employee_str = f"{employee_record.employee_id} ({employee_record.name})"
+        itm = DisplayTransit(
+            item_id=record.item_id,
+            type=item_type.query.filter_by(type_id = item.query.filter_by(item_id=record.item_id).one().type_id).one().item_name,
+            from_loc=record.from_loc,
+            to_loc=record.to_loc,
+            datetime_moved=record.move_date,
+            overseer=formatted_employee_str
+        )
+        all_movements.append(itm)
+    return render_template('dashboard.html', movements=all_movements)
 
 @app.route(JSON_ROUTE + "/all_employees")
 def get_all_employees():
