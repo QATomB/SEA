@@ -1,12 +1,19 @@
 /* Universal Styling */
 * {
     box-sizing: border-box;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 :root {
     --yellow-1: rgb(255, 231, 144);
     --yellow-2: rgb(254, 238, 177);
+    --yellow-3: rgb(243, 213, 106);
+
+    --dark-1: rgb(70, 70, 70);
+
+    --light-1: rgb(206, 206, 206);
+
+    --nav-bar-height: 60px;
 }
 
 html, body {
@@ -20,6 +27,45 @@ h1 {
     height: 60px;
     line-height: 60px;
     padding-left: 40px;
+}
+
+/* Nav Bar Styling */
+
+nav {
+    margin: 80px 0 85px 0;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--dark-1);
+    height: var(--nav-bar-height);
+}
+
+nav li {
+    float: left;
+    border-collapse: collapse;
+    border-right: 2px solid var(--light-1);
+    height: 100%;
+}
+
+nav li:last-child {
+    border: none;
+}
+
+nav a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding-inline: 50px;
+    line-height: var(--nav-bar-height);
+    text-decoration: none;
+}
+
+nav a:hover {
+    background-color: var(--yellow-3);
+    color: black;
 }
 
 /* Table Styling */
@@ -39,6 +85,7 @@ th {
     background-color: var(--yellow-1);
     cursor: pointer;
 }
+
 th:hover {
     filter: saturate(30%) brightness(40%);
 }
@@ -61,6 +108,7 @@ form {
     text-align: center;
     border-radius: 4px;
 }
+
 input, select {
     width: 300px;
     max-height: 150px;
