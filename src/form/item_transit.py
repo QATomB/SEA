@@ -19,4 +19,4 @@ class ItemTransitForm(FlaskForm):
     from_loc = SelectField('Start location', choices=[(choice.name, choice.name) for choice in Locations], validators=[DataRequired()])
     to_loc = SelectField('End location', choices=[(choice.name, choice.name) for choice in Locations], validators=[DataRequired()])
     employee_id = QuerySelectField('Assigned Employee\'s Employee ID', query_factory=all_employees, validators=[DataRequired()])
-    submit = SubmitField('Add Item Type')
+    submit = SubmitField('Add Item Movement Log')

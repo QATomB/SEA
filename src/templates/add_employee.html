@@ -16,4 +16,39 @@
             {{ form.submit() }}
         </p>
     </form>
+    <br />
+    <br />
+    <h1>Current Employee Records</h1>
+    <table id="existing-table">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+                <tr class="item">
+                    <td>{{ emp.employee_id }}</td>
+                    <td>{{ emp.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script>
+        let tid = "#exising-table";
+        let headers = document.querySelectorAll(tid + " th");
+
+        // Sort the table element when clicking on the table headers
+        headers.forEach(function (element, i) {
+            element.addEventListener("click", function () {
+                w3.sortHTML(tid, ".item", "td:nth-child(" + (i + 1) + ")");
+            });
+            if (element.innerHTML == "Employee Id") {
+                element.click();
+                element.click();
+            }
+        });
+    </script>
 {% endblock %}

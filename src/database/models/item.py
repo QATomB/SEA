@@ -9,6 +9,9 @@ class Quality(enum.Enum):
     ok = 2
     good = 3
 
+    def __str__(self):
+        return str(self.name)
+
 # Item model for unique instances of types of items NHS Midlands holds
 class item(db.Model):
     __tablename__ = "item"

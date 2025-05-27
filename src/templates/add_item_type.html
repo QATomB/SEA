@@ -16,4 +16,41 @@
             {{ form.submit() }}
         </p>
     </form>
+    <br />
+    <br />
+    <h1>Existing Item Types Records</h1>
+    <table id="existing-table">
+        <thead>
+            <tr>
+                <th>Item Type ID</th>
+                <th>Item Type</th>
+                <th>Item Type Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for itm in itemtypes %}
+                <tr class="item">
+                    <td>{{ itm.type_id }}</td>
+                    <td>{{ itm.item_name }}</td>
+                    <td>{{ itm.item_desc }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script>
+        let tid = "#exising-table";
+        let headers = document.querySelectorAll(tid + " th");
+
+        // Sort the table element when clicking on the table headers
+        headers.forEach(function (element, i) {
+            element.addEventListener("click", function () {
+                w3.sortHTML(tid, ".item", "td:nth-child(" + (i + 1) + ")");
+            });
+            if (element.innerHTML == "Item Type ID") {
+                element.click();
+                element.click();
+            }
+        });
+    </script>
 {% endblock %}
