@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Add Item Movement To Database</h1>
+    {% include "_navbar.html" %}
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -28,4 +29,41 @@
             {{ form.submit() }}
         </p>
     </form>
+    <h1>Existing Items</h1>
+    <table id="existing-table">
+        <thead>
+            <tr>
+                <th>Item ID</th>
+                <th>Item Type ID</th>
+                <th>Item Type Name</th>
+                <th>Item Condition</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for itm in items %}
+                <tr class="item">
+                    <td class="item-id">{{ itm.item_id }}</td>
+                    <td>{{ itm.type_id }}</td>
+                    <td>{{ itm.type_name }}</td>
+                    <td>{{ itm.condition }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script>
+        let tid = "#existing-table";
+        let headers = document.querySelectorAll(tid + " th");
+
+        // Sort the table element when clicking on the table headers
+        headers.forEach(function (element, i) {
+            element.addEventListener("click", function () {
+                w3.sortHTML(tid, ".item", "td:nth-child(" + (i + 1) + ")");
+            });
+            if (element.innerHTML == "Item ID") {
+                element.click();
+                element.click();
+            }
+        });
+    </script>
 {% endblock %}

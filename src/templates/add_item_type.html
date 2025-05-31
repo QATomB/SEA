@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Add Item Type To Database</h1>
+    {% include "_navbar.html" %}
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -30,7 +31,7 @@
         <tbody>
             {% for itm in itemtypes %}
                 <tr class="item">
-                    <td>{{ itm.type_id }}</td>
+                    <td class="type-id darken">{{ itm.type_id }}</td>
                     <td>{{ itm.item_name }}</td>
                     <td>{{ itm.item_desc }}</td>
                 </tr>
@@ -39,7 +40,7 @@
     </table>
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script>
-        let tid = "#exising-table";
+        let tid = "#existing-table";
         let headers = document.querySelectorAll(tid + " th");
 
         // Sort the table element when clicking on the table headers
@@ -52,5 +53,25 @@
                 element.click();
             }
         });
+        let rows = document.getElementsByClassName("type-id");
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function() {
+                let choice = "A";
+                let options = ["Delete", "Update"];
+                while (!options.includes(choice) && choice !== null){
+                    choice = prompt("Record: " + rows[i].innerHTML + "\nType \"Delete\" to delete record\nType \"Update\" to update record")
+                }
+                if (choice !== null) {
+                    if (choice == "Delete" && confirm("Are you sure you want to delete item type id of: " + rows[i].innerHTML)) {
+                        window.location.href = window.location.href + "?delete=" + rows[i].innerHTML;
+                    }
+                    else if (choice == "Update") {
+                        let new_name = prompt("Set Item Type Name:", rows[i].nextElementSibling.innerHTML);
+                        let new_description = prompt("Set Item Type Description:", rows[i].nextElementSibling.nextElementSibling.innerHTML);
+                        window.location.href = window.location.href + "?update=true&name=" + new_name + "&desc=" + new_description + "&id=" + rows[i].innerHTML;
+                    }
+                }
+            });
+        }
     </script>
 {% endblock %}

@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Add Item To Database</h1>
+    {% include "_navbar.html" %}
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -31,7 +32,7 @@
         <tbody>
             {% for itm in items %}
                 <tr class="item">
-                    <td>{{ itm.item_id }}</td>
+                    <td class="item-id darken">{{ itm.item_id }}</td>
                     <td>{{ itm.type_id }}</td>
                     <td>{{ itm.type_name }}</td>
                     <td>{{ itm.condition }}</td>
@@ -39,9 +40,28 @@
             {% endfor %}
         </tbody>
     </table>
+    <h1>Item Types</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Type ID</th>
+                <th>Item Type Name</th>
+                <th>Item Type Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for itm in item_types %}
+                <tr class="item">
+                    <td>{{ itm.type_id }}</td>
+                    <td>{{ itm.item_name }}</td>
+                    <td>{{ itm.item_desc }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script>
-        let tid = "#exising-table";
+        let tid = "#existing-table";
         let headers = document.querySelectorAll(tid + " th");
 
         // Sort the table element when clicking on the table headers
@@ -54,5 +74,28 @@
                 element.click();
             }
         });
+        let rows = document.getElementsByClassName("item-id");
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function() {
+                let choice = "A";
+                let options = ["Delete", "Update"];
+                while (!options.includes(choice) && choice !== null){
+                    choice = prompt("Record: " + rows[i].innerHTML + "\nType \"Delete\" to delete record\nType \"Update\" to update record")
+                }
+                if (choice !== null) {
+                    if(choice == "Delete" && confirm("Are you sure you want to delete item id of: " + rows[i].innerHTML)) {
+                        window.location.href = window.location.href + "?delete=" + rows[i].innerHTML;
+                    }
+                    else if (choice == "Update") {
+                        let new_type = prompt("Set Item Type ID:", rows[i].nextElementSibling.innerHTML);
+                        let new_description = ""
+                        const transformedOptions = ["needs_replacing", "ok", "good"]
+                        while (!transformedOptions.includes(new_description))
+                            new_description = prompt("Set Item Condition ['needs_replacing', 'ok', 'good']:", rows[i].nextElementSibling.nextElementSibling.nextElementSibling.innerHTML);
+                        window.location.href = window.location.href + "?update=true&type=" + new_type + "&cond=" + new_description + "&id=" + rows[i].innerHTML;
+                    }
+                }
+            });
+        }
     </script>
 {% endblock %}
