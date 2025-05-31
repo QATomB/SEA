@@ -1,16 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SelectField, DateTimeLocalField, SubmitField
+from wtforms import IntegerField, SelectField, DateTimeLocalField, SubmitField
 from wtforms.validators import DataRequired
 from database.models.item_transit import Locations
-from database.models.employee import employee
 from wtforms_sqlalchemy.fields import QuerySelectField
-from database.db import db
-
-# Abstraction of query to run for QuerySelectField, returning all employees
-def all_employees():
-    employees: list[employee] = db.session.query(employee).all()
-    for e in employees:
-        yield e
+from .employee import all_employees
 
 # Item movement creation form
 class ItemTransitForm(FlaskForm):

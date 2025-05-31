@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Add Employee Record</h1>
+    {% include "_navbar.html" %}
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -9,8 +10,8 @@
             {{ form.employee_id(size=32) }}
         </p>
         <p>
-            {{ form.name.label }}<br />
-            {{ form.name(size=32) }}
+            {{ form.access_level.label }}<br />
+            {{ form.access_level(size=32) }}
         </p>
         <p>
             {{ form.submit() }}
@@ -24,20 +25,22 @@
             <tr>
                 <th>Employee ID</th>
                 <th>Employee Name</th>
+                <th>Employee Permissions</th>
             </tr>
         </thead>
         <tbody>
             {% for emp in employees %}
                 <tr class="item">
-                    <td>{{ emp.employee_id }}</td>
+                    <td class="employee-id">{{ emp.employee_id }}</td>
                     <td>{{ emp.name }}</td>
+                    <td>{{ emp.access_level }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script>
-        let tid = "#exising-table";
+        let tid = "#existing-table";
         let headers = document.querySelectorAll(tid + " th");
 
         // Sort the table element when clicking on the table headers
@@ -50,5 +53,13 @@
                 element.click();
             }
         });
+        let rows = document.getElementsByClassName("employee-id");
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function() {
+                if(confirm("Are you sure you want to delete employee id of: " + rows[i].innerHTML)) {
+                    window.location.href = window.location.href + "?delete=" + rows[i].innerHTML;
+                }
+            });
+        }
     </script>
 {% endblock %}

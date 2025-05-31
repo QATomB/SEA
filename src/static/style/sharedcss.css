@@ -21,6 +21,7 @@ html, body {
     padding: 0;
     margin: 0;
     background-color: white;
+    padding-bottom: 25px;
 }
 
 h1 {
@@ -101,6 +102,10 @@ tr:nth-child(even) {
     background-color: var(--yellow-2);
 }
 
+.darken:hover {
+    background-color: var(--dark-1);
+}
+
 /* Form Styling */
 
 form {
@@ -117,15 +122,18 @@ form {
     border-radius: 4px;
 }
 
-input, select {
-    width: 300px;
+input, select, button {
+    /* width: 300px; */
+    width: 500px;
     max-height: 150px;
+    min-height: 50px;
     margin-top: 5px;
 }
 
 label {
     position: absolute;
-    transform: translateX(-140px);
+    /* transform: translateX(-140px); */
+    transform: translateX(-240px);
 }
 
 input {
