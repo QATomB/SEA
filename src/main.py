@@ -2,10 +2,12 @@ from flask import Flask, jsonify, redirect, render_template, request, url_for, f
 from database.db import db, InitialiseDatabase
 from database.models.item_type import item_type
 from database.models.item import item, Quality
-from database.models.employee import employee
+from database.models.employee import employee, AccessLevel
 from database.models.item_transit import item_transit, Locations
 from database.models.display.display_transit import DisplayTransit
 from database.models.display.display_item import DisplayItem
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import os
 import form as Forms
@@ -15,13 +17,65 @@ load_dotenv()
 
 # Intialise the Flask instance
 app: Flask = Flask(__name__)
+login = LoginManager(app)
+login.login_view = "login"
 # Set Flask secret from .env
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 # Intitialise the database
 InitialiseDatabase(app=app)
 
+@login.user_loader
+def load_user(user_id):
+    try:
+        return employee.query.filter_by(employee_id = user_id).one()
+    except Exception as e:
+        return None
+
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        employee_id = request.form.get("employee_id")
+        name = request.form.get("name")
+        password = request.form.get("password")
+
+        if employee.query.filter_by(employee_id=employee_id).first():
+            return render_template("register.html", error="Employee ID already used!")
+
+        hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
+
+        new_user = employee(employee_id=employee_id, name=name, password=hashed_password, access_level=AccessLevel.user)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return redirect("/login")
+    
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("employee_id")
+        password = request.form.get("password")
+
+        user = employee.query.filter_by(employee_id=username).first()
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect("/")
+        else:
+            return render_template("login.html", error="Invalid username or password")
+
+    return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
 # Main Dashboard page
 @app.route("/")
+@login_required
 def dashboard():
     all_movement_records = item_transit.query.all()
     all_movements = []
